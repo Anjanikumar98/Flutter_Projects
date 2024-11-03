@@ -1,0 +1,1 @@
+ C:\\Users\\anjan\\Downloads\\Flutter-Covid-19-App-main\\.dart_tool\\flutter_build\\6e244985d51366c1d15a471410a26584\\native_assets.yaml: 

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "755518872670",
+    "project_id": "anjanikumar1",
+    "storage_bucket": "anjanikumar1.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:755518872670:android:d26f9b9dbd58d8a7a4a8cf",
+        "android_client_info": {
+          "package_name": "com.example.anjanikumar1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA8DQbxNZXa-DptZ63-wSbv_G4ewYU3-m0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

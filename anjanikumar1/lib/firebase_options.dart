@@ -40,8 +40,8 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions web = FirebaseOptions(
     apiKey: '',
-    appId: '1:755518872670:web:a82041f2ad64f374a4a8cf',
-    messagingSenderId: '755518872670',
+    appId: '',
+    messagingSenderId: '',
     projectId: 'anjanikumar1',
     authDomain: 'anjanikumar1.firebaseapp.com',
     storageBucket: 'anjanikumar1.firebasestorage.app',

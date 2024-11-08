@@ -1,6 +1,7 @@
 # anjanikumar1
 
 A new Flutter project.
+In this project i am intergrating firebase with flutter.
 
 ## Getting Started
 

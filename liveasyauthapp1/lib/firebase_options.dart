@@ -41,8 +41,8 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyBHG0Ek8XFJuOH97KTfJ8TTYJTOq9v-WJ0',
-    appId: '1:609894615950:web:070107515a488f705bf2df',
+    apiKey: '',
+    appId: '',
     messagingSenderId: '609894615950',
     projectId: 'liveasyauthapp1',
     authDomain: 'liveasyauthapp1.firebaseapp.com',
@@ -51,7 +51,7 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBzJnSLG1GORBXF7gC5_ru2o6NUxVEWD10',
+    apiKey: '',
     appId: '1:609894615950:android:4887890dd47dec0a5bf2df',
     messagingSenderId: '609894615950',
     projectId: 'liveasyauthapp1',
@@ -59,7 +59,7 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDaIkhpYnVC89OcMnAK7evzTrJ8JJuXNFo',
+    apiKey: '',
     appId: '1:609894615950:ios:e0fc429c00b248525bf2df',
     messagingSenderId: '609894615950',
     projectId: 'liveasyauthapp1',
@@ -68,7 +68,7 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyDaIkhpYnVC89OcMnAK7evzTrJ8JJuXNFo',
+    apiKey: '',
     appId: '1:609894615950:ios:e0fc429c00b248525bf2df',
     messagingSenderId: '609894615950',
     projectId: 'liveasyauthapp1',
@@ -77,7 +77,7 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyBHG0Ek8XFJuOH97KTfJ8TTYJTOq9v-WJ0',
+    apiKey: '',
     appId: '1:609894615950:web:66ce11187f1dc6d35bf2df',
     messagingSenderId: '609894615950',
     projectId: 'liveasyauthapp1',

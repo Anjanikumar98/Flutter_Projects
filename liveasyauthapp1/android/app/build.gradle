@@ -1,0 +1,51 @@
+plugins {
+    id "com.android.application"
+    id "kotlin-android"
+    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
+    id "dev.flutter.flutter-gradle-plugin"
+}
+
+android {
+    namespace = "com.example.liveasyauthapp1"  // Keep your namespace here
+    compileSdk = flutter.compileSdkVersion
+    ndkVersion = flutter.ndkVersion
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8
+    }
+
+    defaultConfig {
+        applicationId = "com.example.liveasyauthapp1"  // Make sure this matches your app's ID
+        minSdk = 23  // Update to 23 to support firebase_auth package
+        targetSdk = flutter.targetSdkVersion
+        versionCode = flutter.versionCode
+        versionName = flutter.versionName
+    }
+
+    buildTypes {
+        release {
+            // Use your own signing config here if you're building for production
+            signingConfig = signingConfigs.debug
+        }
+    }
+
+    // Additional Firebase-specific configuration (such as adding Firebase services)
+    dependencies {
+        // Firebase SDK for Android (for authentication, etc.)
+        implementation platform('com.google.firebase:firebase-bom:33.6.0')
+        implementation 'com.google.firebase:firebase-auth'
+        implementation 'com.google.firebase:firebase-firestore'
+    }
+}
+
+// Apply the Google services plugin (needed for Firebase)
+apply plugin: 'com.google.gms.google-services'
+
+flutter {
+    source = "../.."
+}

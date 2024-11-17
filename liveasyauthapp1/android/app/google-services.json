@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "609894615950",
+    "project_id": "liveasyauthapp1",
+    "storage_bucket": "liveasyauthapp1.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:609894615950:android:78d56854346242825bf2df",
+        "android_client_info": {
+          "package_name": "com.example.liveasyauthapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBzJnSLG1GORBXF7gC5_ru2o6NUxVEWD10"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:609894615950:android:4887890dd47dec0a5bf2df",
+        "android_client_info": {
+          "package_name": "com.example.liveasyauthapp1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBzJnSLG1GORBXF7gC5_ru2o6NUxVEWD10"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

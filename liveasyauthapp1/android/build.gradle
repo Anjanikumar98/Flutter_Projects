@@ -1,0 +1,21 @@
+allprojects {
+    repositories {
+        google()        // Required for Firebase and Android dependencies
+        mavenCentral()  // Central repository for various dependencies
+        mavenCentral()       // Legacy repository for certain libraries (optional, based on project needs)
+    }
+}
+
+rootProject.buildDir = "../build"
+
+subprojects {
+    project.buildDir = "${rootProject.buildDir}/${project.name}"
+}
+
+subprojects {
+    project.evaluationDependsOn(":app")
+}
+
+tasks.register("clean", Delete) {
+    delete rootProject.buildDir
+}

@@ -4,10 +4,9 @@ import 'package:flutter/material.dart';
 import 'profile_selection_screen.dart'; // Import the Profile Selection Screen
 
 class VerifyPhoneScreen extends StatefulWidget {
-  final String verificationId;
+  final String phoneNumber;
 
-  const VerifyPhoneScreen(
-      {super.key, required this.verificationId, required String phoneNumber});
+  const VerifyPhoneScreen({super.key, required this.phoneNumber, required String verificationId});
 
   @override
   _VerifyPhoneScreenState createState() => _VerifyPhoneScreenState();
@@ -15,11 +14,13 @@ class VerifyPhoneScreen extends StatefulWidget {
 
 class _VerifyPhoneScreenState extends State<VerifyPhoneScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final TextEditingController _otpController = TextEditingController();
 
   // List to hold each OTP digit
   final List<TextEditingController> _otpControllers =
-      List.generate(6, (_) => TextEditingController());
+  List.generate(6, (_) => TextEditingController());
+
+  // Variable to hold verificationId
+  String? _verificationId;
 
   // Verify OTP entered by the user
   void _verifyOtp() async {
@@ -27,20 +28,20 @@ class _VerifyPhoneScreenState extends State<VerifyPhoneScreen> {
 
     if (otp.length < 6) {
       ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text("Please enter a 6-digit OTP")));
+          .showSnackBar(const SnackBar(content: Text("Please enter a 6-digit OTP")));
       return;
     }
 
     try {
       // Create a PhoneAuthCredential using the verificationId and OTP entered
       final PhoneAuthCredential credential = PhoneAuthProvider.credential(
-        verificationId: widget.verificationId,
+        verificationId: _verificationId!,
         smsCode: otp,
       );
 
       // Sign in with the credential
       final UserCredential userCredential =
-          await _auth.signInWithCredential(credential);
+      await _auth.signInWithCredential(credential);
 
       if (userCredential.user != null) {
         // Show success message
@@ -50,7 +51,7 @@ class _VerifyPhoneScreenState extends State<VerifyPhoneScreen> {
         // Navigate to Profile Selection Screen after successful OTP verification
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => ProfileSelectionScreen()),
+          MaterialPageRoute(builder: (context) => const ProfileSelectionScreen()),
         );
       } else {
         ScaffoldMessenger.of(context)
@@ -59,6 +60,48 @@ class _VerifyPhoneScreenState extends State<VerifyPhoneScreen> {
     } catch (e) {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text("Error: $e")));
+    }
+  }
+
+  // Resend OTP functionality
+  void _resendOtp() async {
+    // Call Firebase to resend the OTP
+    print("Resending OTP...");
+
+    try {
+      await FirebaseAuth.instance.verifyPhoneNumber(
+        phoneNumber: widget.phoneNumber, // The phone number to verify
+        verificationCompleted: (PhoneAuthCredential credential) {
+          // Handle the automatic verification if applicable
+          print("Verification completed automatically: $credential");
+        },
+        verificationFailed: (FirebaseAuthException e) {
+          // Handle errors if verification fails
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text("Verification failed: ${e.message}"),
+          ));
+        },
+        codeSent: (String verificationId, int? resendToken) {
+          // This function is called when the OTP is sent successfully
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("OTP sent successfully!"),
+          ));
+
+          // Update the verificationId for the next steps
+          setState(() {
+            _verificationId = verificationId;
+          });
+        },
+        codeAutoRetrievalTimeout: (String verificationId) {
+          // Handle timeout if auto-retrieval of the OTP fails
+          print("OTP auto-retrieval timeout: $verificationId");
+        },
+      );
+    } catch (e) {
+      print("Error in resending OTP: $e");
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Error resending OTP: $e"),
+      ));
     }
   }
 
@@ -83,7 +126,7 @@ class _VerifyPhoneScreenState extends State<VerifyPhoneScreen> {
             ),
             const SizedBox(height: 20),
             const Text(
-              "We sent an OTP to your phone. Please enter it below to verify.",
+              "We sent an OTP to your phone. \n Please enter it below to verify.",
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 16, color: Colors.grey),
             ),
@@ -137,8 +180,8 @@ class _VerifyPhoneScreenState extends State<VerifyPhoneScreen> {
                         color: Colors.blueAccent),
                     recognizer: TapGestureRecognizer()
                       ..onTap = () {
-                        // You can implement the resend OTP functionality here
-                        print("Request Again tapped");
+                        // Call the _resendOtp function
+                        _resendOtp();
                       },
                   ),
                 ],
@@ -165,8 +208,6 @@ class _VerifyPhoneScreenState extends State<VerifyPhoneScreen> {
               ),
             ),
             const SizedBox(height: 20),
-
-            // Text asking if user received the code
           ],
         ),
       ),

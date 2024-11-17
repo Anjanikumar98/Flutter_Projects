@@ -18,9 +18,9 @@ class _MobileNumberScreenState extends State<MobileNumberScreen> {
     String phoneNumber = _phoneController.text.trim();
 
     // Phone number validation
-    if (phoneNumber.isEmpty || phoneNumber.length != 10) {
+    if (phoneNumber.isEmpty || !RegExp(r'^[0-9]{10}$').hasMatch(phoneNumber)) {
       setState(() {
-        _errorMessage = "Please enter a valid phone number.";
+        _errorMessage = "Please enter a valid 10-digit phone number.";
       });
       return;
     }
@@ -54,7 +54,7 @@ class _MobileNumberScreenState extends State<MobileNumberScreen> {
             MaterialPageRoute(
               builder: (context) => VerifyPhoneScreen(
                 verificationId: verificationId,
-                phoneNumber: '', // Pass verificationId here
+                phoneNumber: phoneNumber, // Pass verificationId here
               ),
             ),
           );
@@ -70,6 +70,7 @@ class _MobileNumberScreenState extends State<MobileNumberScreen> {
         _isLoading = false;
         _errorMessage = "An error occurred. Please try again.";
       });
+      print("Error during phone verification: $e");
     }
   }
 

@@ -39,9 +39,9 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyCwobwg7J5vsfL5IxaAHhLNM1I7E5zqg28',
-    appId: '1:755518872670:web:a82041f2ad64f374a4a8cf',
-    messagingSenderId: '755518872670',
+    apiKey: '',
+    appId: '',
+    messagingSenderId: '',
     projectId: 'anjanikumar1',
     authDomain: 'anjanikumar1.firebaseapp.com',
     storageBucket: 'anjanikumar1.firebasestorage.app',
@@ -49,35 +49,35 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyA8DQbxNZXa-DptZ63-wSbv_G4ewYU3-m0',
-    appId: '1:755518872670:android:d26f9b9dbd58d8a7a4a8cf',
-    messagingSenderId: '755518872670',
+    apiKey: '',
+    appId: '',
+    messagingSenderId: '',
     projectId: 'anjanikumar1',
     storageBucket: 'anjanikumar1.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDGNFIc4TifeM2ZGHdeI_BFTO33L2APqN0',
-    appId: '1:755518872670:ios:b31c33c529a4da67a4a8cf',
-    messagingSenderId: '755518872670',
+    apiKey: '',
+    appId: '',
+    messagingSenderId: '',
     projectId: 'anjanikumar1',
     storageBucket: 'anjanikumar1.firebasestorage.app',
     iosBundleId: 'com.example.anjanikumar1',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyDGNFIc4TifeM2ZGHdeI_BFTO33L2APqN0',
-    appId: '1:755518872670:ios:b31c33c529a4da67a4a8cf',
-    messagingSenderId: '755518872670',
+    apiKey: '',
+    appId: '',
+    messagingSenderId: '',
     projectId: 'anjanikumar1',
     storageBucket: 'anjanikumar1.firebasestorage.app',
     iosBundleId: 'com.example.anjanikumar1',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyCwobwg7J5vsfL5IxaAHhLNM1I7E5zqg28',
-    appId: '1:755518872670:web:6e3c0b581d99667fa4a8cf',
-    messagingSenderId: '755518872670',
+    apiKey: '',
+    appId: '',
+    messagingSenderId: '',
     projectId: 'anjanikumar1',
     authDomain: 'anjanikumar1.firebaseapp.com',
     storageBucket: 'anjanikumar1.firebasestorage.app',

@@ -22,7 +22,7 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
           backgroundColor: Colors.transparent,
           elevation: 0,
           flexibleSpace: CustomPaint(
-            painter: WavePainter(),
+            painter: WavePainter(), // Custom wave paint for the app bar
           ),
         ),
       ),
@@ -160,3 +160,29 @@ class _ProfileSelectionScreenState extends State<ProfileSelectionScreen> {
     }
   }
 }
+
+// This is the custom wave painter from the first code
+class WavePainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    Paint paint = Paint()
+      ..color = Colors.blue
+      ..style = PaintingStyle.fill;
+
+    Path path = Path();
+    path.lineTo(0, 0);
+    path.quadraticBezierTo(
+        size.width / 4, size.height / 2, size.width, 0); // Wave path
+    path.lineTo(size.width, size.height);
+    path.lineTo(0, size.height);
+    path.close();
+
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) {
+    return false;
+  }
+}
+

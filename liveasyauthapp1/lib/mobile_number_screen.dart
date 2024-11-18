@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:liveasyauthapp1/verify_phone_screen.dart';
+import 'verify_phone_screen.dart'; // Adjust the import as per your file structure
 
 class MobileNumberScreen extends StatefulWidget {
   const MobileNumberScreen({super.key});
@@ -17,7 +17,7 @@ class _MobileNumberScreenState extends State<MobileNumberScreen> {
   void _sendOTP() async {
     String phoneNumber = _phoneController.text.trim();
 
-    // Phone number validation
+    // Improved phone number validation
     if (phoneNumber.isEmpty || !RegExp(r'^[0-9]{10}$').hasMatch(phoneNumber)) {
       setState(() {
         _errorMessage = "Please enter a valid 10-digit phone number.";
@@ -35,12 +35,13 @@ class _MobileNumberScreenState extends State<MobileNumberScreen> {
         phoneNumber: "+91$phoneNumber",
         timeout: const Duration(seconds: 60),
         verificationCompleted: (PhoneAuthCredential credential) {
-          // Handle automatic verification
+          // Handle automatic verification if required
         },
         verificationFailed: (FirebaseAuthException e) {
           setState(() {
             _isLoading = false;
-            _errorMessage = "Verification failed. Please try again.";
+            _errorMessage =
+                e.message ?? "Verification failed. Please try again.";
           });
         },
         codeSent: (String verificationId, int? resendToken) {
@@ -48,13 +49,13 @@ class _MobileNumberScreenState extends State<MobileNumberScreen> {
             _isLoading = false;
           });
 
-          // Pass the verificationId to VerifyPhoneScreen
+          // Navigate to VerifyPhoneScreen
           Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => VerifyPhoneScreen(
                 verificationId: verificationId,
-                phoneNumber: phoneNumber, // Pass verificationId here
+                phoneNumber: phoneNumber,
               ),
             ),
           );
@@ -81,7 +82,7 @@ class _MobileNumberScreenState extends State<MobileNumberScreen> {
         leading: IconButton(
           icon: const Icon(Icons.close),
           onPressed: () {
-            // Handle close action
+            // Optional close action
           },
         ),
         backgroundColor: Colors.white,

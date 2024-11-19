@@ -1,45 +1,52 @@
 plugins {
-    id "com.android.application"
-    id 'com.google.gms.google-services' // Firebase configuration
-    id "kotlin-android"
-    id "dev.flutter.flutter-gradle-plugin"
+    id "com.android.application" // For Android app builds
+    id "com.google.gms.google-services" // Firebase configuration
+    id "kotlin-android" // For Kotlin integration
+    id "dev.flutter.flutter-gradle-plugin" // Flutter plugin
 }
 
 android {
-    namespace = "com.example.anjanikumar1"
-    compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    namespace = "com.example.anjanikumar1" // Your app package name
+    compileSdk = flutter.compileSdkVersion // Uses the compileSdkVersion from Flutter
+
+    ndkVersion = flutter.ndkVersion // Ensures the NDK version matches Flutter requirements
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_1_8 // Java 8 compatibility
         targetCompatibility = JavaVersion.VERSION_1_8
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8
+        jvmTarget = "1.8" // Correct syntax for Kotlin JVM target
     }
 
     defaultConfig {
-        applicationId = "com.example.anjanikumar1" // Your app's package name
-        minSdk = 23 // Update this to 23 as firebase_auth requires it
-        targetSdk = flutter.targetSdkVersion
-        versionCode = flutter.versionCode
-        versionName = flutter.versionName
+        applicationId = "com.example.anjanikumar1" // Package name
+        minSdk = 34 // Minimum supported SDK version for Firebase
+        targetSdk = flutter.targetSdkVersion // Uses the targetSdkVersion from Flutter
+        versionCode = flutter.versionCode // Version code from Flutter
+        versionName = flutter.versionName // Version name from Flutter
     }
 
     buildTypes {
         release {
-            signingConfig = signingConfigs.debug // Configure for release as needed
+            // Configure signingConfig if you have release signing keys
+            shrinkResources false // Disables shrinking resources for debugging release builds
+            minifyEnabled false // Disables code shrinking for debugging
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 }
 
 flutter {
-    source = "../.."
+    source = "../.." // Path to Flutter project source
 }
 
 dependencies {
-    implementation platform('com.google.firebase:firebase-bom:33.5.1') // Use the latest version
-    implementation 'com.google.firebase:firebase-analytics' // Include any other Firebase libraries as needed
-    implementation 'com.google.firebase:firebase-auth' // Add firebase_auth library if you're using it
+    // Firebase dependencies
+    implementation platform('com.google.firebase:firebase-bom:33.6.0') // Firebase BOM
+    implementation 'com.google.firebase:firebase-analytics' // Firebase Analytics
+    implementation 'com.google.firebase:firebase-auth' // Firebase Auth library (optional)
+
+    // Add other libraries your app depends on
 }

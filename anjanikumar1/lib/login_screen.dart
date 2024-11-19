@@ -1,3 +1,4 @@
+import 'package:anjanikumar1/firestore/firestore_list_screen.dart';
 import 'package:anjanikumar1/post_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -40,8 +41,10 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       await auth.signInWithEmailAndPassword(email: email, password: password);
       setState(() => loading = false);
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => PostScreen())); // Navigate to PostScreen
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => FirestoreListScreen())); // Navigate to PostScreen
     } catch (e) {
       setState(() => loading = false);
       Utils().toastMessage(e.toString());

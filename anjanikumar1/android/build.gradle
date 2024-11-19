@@ -1,29 +1,29 @@
 buildscript {
     repositories {
-        google()
-        mavenCentral()
+        google() // Google's Maven repository for Android dependencies
+        mavenCentral() // Central Maven repository for other libraries
     }
     dependencies {
-        // Add the Google services classpath
-        classpath 'com.google.gms:google-services:4.4.2' // Or the version you're using
+        // Google services plugin for Firebase integration
+        classpath 'com.google.gms:google-services:4.4.2' // Update to the latest stable version if needed
     }
 }
 
 allprojects {
     repositories {
-        google()
-        mavenCentral()
+        google() // Ensure Android dependencies are resolved from Google
+        mavenCentral() // Secondary repository for resolving libraries
     }
 }
 
+// Define a common build directory for all projects in the root project
 rootProject.buildDir = "../build"
 subprojects {
-    project.buildDir = "${rootProject.buildDir}/${project.name}"
-}
-subprojects {
-    project.evaluationDependsOn(":app")
+    project.buildDir = "${rootProject.buildDir}/${project.name}" // Subprojects build inside the root directory
+    project.evaluationDependsOn(":app") // Ensure `:app` project is evaluated first
 }
 
+// Task to clean up all build directories across the root and subprojects
 tasks.register("clean", Delete) {
     delete rootProject.buildDir
 }

@@ -15,7 +15,7 @@ class RoundButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: onTap,  // Use onTap to handle the tap action
+      onTap: onTap, // Use onTap to handle the tap action
       child: Container(
         height: 50,
         decoration: BoxDecoration(
@@ -24,11 +24,13 @@ class RoundButton extends StatelessWidget {
         ),
         child: Center(
           child: loading
-              ? CircularProgressIndicator(color: Colors.white) // Show loading spinner if loading is true
+              ? CircularProgressIndicator(
+                  color:
+                      Colors.white) // Show loading spinner if loading is true
               : Text(
-            title,
-            style: TextStyle(color: Colors.white),
-          ),
+                  title,
+                  style: TextStyle(color: Colors.white),
+                ),
         ),
       ),
     );

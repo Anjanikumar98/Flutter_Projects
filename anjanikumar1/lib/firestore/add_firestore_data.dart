@@ -1,25 +1,27 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+
 import 'package:anjanikumar1/round_button.dart';
 import 'package:anjanikumar1/utils.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter/material.dart';
 
-class AddPost extends StatefulWidget {
-  const AddPost({super.key});
+class AddFirestoreData extends StatefulWidget {
+  const AddFirestoreData({super.key});
 
   @override
-  State<AddPost> createState() => _AddPostState();
+  State<AddFirestoreData> createState() => _AddFirestoreDataState();
 }
 
-class _AddPostState extends State<AddPost> {
+class _AddFirestoreDataState extends State<AddFirestoreData> {
   final postController = TextEditingController();
   bool loading = false;
-  final databaseRef = FirebaseDatabase.instance.ref('Post');
+  final fireStore = FirebaseFirestore.instance.collection('Users');
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Post'),
+        title: Text('Add Firestore data'),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -40,29 +42,25 @@ class _AddPostState extends State<AddPost> {
             ),
             RoundButton(
                 title: 'Add',
+               loading: loading,
                 onTap: () {
                   setState(() {
                     loading = true;
                   });
 
-                  String id = DateTime.now().millisecondsSinceEpoch.toString();
-
-                  databaseRef.child(id).set({
-                    'title': postController.text.toString(),
-                    'id': id
-                  }).then((value) {
-                    Utils().toastMessage('Post added');
+                  String id = DateTime.now().microsecondsSinceEpoch.toString();
+                  fireStore.doc().set({
+                    'title' : postController.text.toString(),
+                    'id' : id
+                  }).then((value){
                     setState(() {
                       loading = false;
                     });
-                  }).onError((error, stackTrace) {
+                    Utils().toastMessage('post added');
+                  }).onError((error, stackTrace){
                     Utils().toastMessage(error.toString());
-                    setState(() {
-                      loading = false;
-                    });
                   });
-                },
-                loading: loading)
+                })
           ],
         ),
       ),

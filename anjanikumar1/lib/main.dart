@@ -9,7 +9,8 @@ void main() async {
   // Initialize Firebase
   try {
     await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,  // Ensuring Firebase is initialized
+      options: DefaultFirebaseOptions
+          .currentPlatform, // Ensuring Firebase is initialized
     );
     print('Firebase initialized successfully.');
   } catch (e) {

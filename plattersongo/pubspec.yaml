@@ -35,6 +35,8 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
+  flutter_animate: ^4.5.2
+  provider: ^6.1.2
 
 dev_dependencies:
   flutter_test:
@@ -52,6 +54,28 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
+  assets:
+    - assets/Add icon.jpg
+    - assets/Biryani dish.jpg
+    - assets/Catering service logo.jpg
+    - assets/Checkmark icon.jpg
+    - assets/edit icon.png
+    - assets/Empty state illustration.jpg
+    - assets/Error validation.jpg
+    - assets/Food app background.jpg
+    - assets/guest icon.png
+    - assets/Gulab jamun.jpg
+    - assets/Light gradient background.jpg
+    - assets/Loading spinner.jpg
+    - assets/logo.jpg
+    - assets/No image placeholder.jpg
+    - assets/Non-vegetarian food platter.jpg
+    - assets/Paneer tikka.jpg
+    - assets/Price tag.jpg
+    - assets/Remove icon.jpg
+    - assets/Special food platter.jpg
+    - assets/Success checkmark.jpg
+    - assets/Vegetarian food platter.jpg
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

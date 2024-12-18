@@ -1,24 +1,22 @@
 import 'package:flutter/material.dart';
 
+import 'Screens/platters_screen.dart';
+
 void main() {
-  runApp(const MyApp());
+  runApp(PlatterApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  // This widget is the root of your application.
+class PlatterApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'PlatterEase',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+        primarySwatch: Colors.orange,
+        fontFamily: 'Lato',
       ),
-      home: Scaffold(
-
-      ),
+      home: PlattersScreen(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }

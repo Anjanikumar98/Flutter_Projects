@@ -1,9 +1,7 @@
-// lib/screens/login_screen.dart
 import 'package:flutter/material.dart';
-
-import 'package:healthsync/services/auth_services.dart';
-import 'package:provider/provider.dart';
-
+import 'package:firebase_auth/firebase_auth.dart'; // Firebase Authentication
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_sign_in/google_sign_in.dart'; // Google Sign-In
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -11,170 +9,108 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
-  bool _passwordVisible = false;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
+
+  // Email and Password Controllers
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+
+  // Loading State
   bool _isLoading = false;
-  String? _errorMessage;
+
+  // Sign in with Email and Password
+  Future<void> _signInWithEmail() async {
+    try {
+      setState(() {
+        _isLoading = true;
+      });
+      final UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+      Fluttertoast.showToast(msg: 'Login successful');
+      setState(() {
+        _isLoading = false;
+      });
+      // Navigate to the main app screen after login
+      Navigator.pushReplacementNamed(context, '/dashboard');
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+      Fluttertoast.showToast(msg: 'Error: ${e.toString()}');
+    }
+  }
+
+  // Sign in with Google
+  Future<void> _signInWithGoogle() async {
+    try {
+      setState(() {
+        _isLoading = true;
+      });
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      final GoogleSignInAuthentication googleAuth = await googleUser!.authentication;
+      final OAuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+      final UserCredential userCredential = await _auth.signInWithCredential(credential);
+      Fluttertoast.showToast(msg: 'Login successful');
+      setState(() {
+        _isLoading = false;
+      });
+      // Navigate to the main app screen after login
+      Navigator.pushReplacementNamed(context, '/dashboard');
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+      Fluttertoast.showToast(msg: 'Error: ${e.toString()}');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Login'),
-      ),
+      appBar: AppBar(title: Text('Login')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: _isLoading
-            ? Center(child: CircularProgressIndicator())
-            : SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              // App logo/branding
-              Image.asset('assets/logo.png', height: 150),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Email and Password Fields
+            TextField(
+              controller: _emailController,
+              decoration: InputDecoration(labelText: 'Email'),
+            ),
+            TextField(
+              controller: _passwordController,
+              obscureText: true,
+              decoration: InputDecoration(labelText: 'Password'),
+            ),
+            SizedBox(height: 20),
 
-              // Email input field with validation
-              Form(
-                key: _formKey,
-                child: Column(
-                  children: [
-                    TextFormField(
-                      controller: _emailController,
-                      keyboardType: TextInputType.emailAddress,
-                      decoration: InputDecoration(
-                        labelText: 'Email',
-                        prefixIcon: Icon(Icons.email),
-                      ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter an email';
-                        } else if (!RegExp(r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$").hasMatch(value)) {
-                          return 'Enter a valid email address';
-                        }
-                        return null;
-                      },
-                    ),
-                    SizedBox(height: 16),
+            // Login Button
+            ElevatedButton(
+              onPressed: _isLoading ? null : _signInWithEmail,
+              child: _isLoading
+                  ? CircularProgressIndicator()
+                  : Text('Login with Email'),
+            ),
+            SizedBox(height: 10),
 
-                    // Password input field with visibility toggle
-                    TextFormField(
-                      controller: _passwordController,
-                      obscureText: !_passwordVisible,
-                      decoration: InputDecoration(
-                        labelText: 'Password',
-                        prefixIcon: Icon(Icons.lock),
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            _passwordVisible ? Icons.visibility : Icons.visibility_off,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              _passwordVisible = !_passwordVisible;
-                            });
-                          },
-                        ),
-                      ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter a password';
-                        }
-                        return null;
-                      },
-                    ),
-                    SizedBox(height: 16),
-
-                    // "Sign in with Google" button
-                    ElevatedButton.icon(
-                      onPressed: _signInWithGoogle,
-                      icon: Icon(Icons.search),
-                      label: Text('Sign in with Google'),
-                    ),
-                    SizedBox(height: 16),
-
-                    // "Sign in with Email" button
-                    ElevatedButton(
-                      onPressed: _signInWithEmail,
-                      child: Text('Sign in with Email'),
-                    ),
-                    SizedBox(height: 16),
-
-                    // "Forgot Password?" link
-                    TextButton(
-                      onPressed: _forgotPassword,
-                      child: Text('Forgot Password?'),
-                    ),
-                    SizedBox(height: 16),
-
-                    // Registration link for new users
-                    TextButton(
-                      onPressed: _navigateToRegister,
-                      child: Text('Don\'t have an account? Register'),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
+            // Google Sign-In Button
+            ElevatedButton(
+              onPressed: _isLoading ? null : _signInWithGoogle,
+              child: _isLoading
+                  ? CircularProgressIndicator()
+                  : Text('Login with Google'),
+            ),
+          ],
         ),
       ),
     );
-  }
-
-  Future<void> _signInWithEmail() async {
-    if (!_formKey.currentState!.validate()) return;
-
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
-
-    try {
-      final email = _emailController.text.trim();
-      final password = _passwordController.text.trim();
-
-      // Use FirebaseAuth for email/password authentication
-      final authService = Provider.of<AuthService>(context, listen: false);
-      await authService.signInWithEmail(email, password);
-
-      // Redirect to dashboard after successful login
-      Navigator.pushReplacementNamed(context, '/dashboard');
-    } catch (e) {
-      setState(() {
-        _isLoading = false;
-        _errorMessage = 'Authentication failed. Please try again.';
-      });
-    }
-  }
-
-  Future<void> _signInWithGoogle() async {
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
-
-    try {
-      final authService = Provider.of<AuthService>(context, listen: false);
-      await authService.signInWithGoogle();
-
-      // Redirect to dashboard after successful login
-      Navigator.pushReplacementNamed(context, '/dashboard');
-    } catch (e) {
-      setState(() {
-        _isLoading = false;
-        _errorMessage = 'Google Sign-In failed. Please try again.';
-      });
-    }
-  }
-
-  void _forgotPassword() {
-    // Implement Forgot Password flow
-    Navigator.pushNamed(context, '/forgot-password');
-  }
-
-  void _navigateToRegister() {
-    // Navigate to registration screen
-    Navigator.pushNamed(context, '/register');
   }
 }

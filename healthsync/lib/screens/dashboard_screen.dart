@@ -1,10 +1,6 @@
-// lib/screens/dashboard_screen.dart
 import 'package:flutter/material.dart';
-import 'package:healthsync/services/auth_services.dart';
-import 'package:provider/provider.dart';
-import 'package:flutter/scheduler.dart';
-
-import 'health_service.dart';
+import 'package:fl_chart/fl_chart.dart';  // Import fl_chart
+import 'package:intl/intl.dart';  // To use DateFormat
 
 class DashboardScreen extends StatefulWidget {
   @override
@@ -12,235 +8,141 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
-  bool _isRefreshing = false;
+  DateTime _startDate = DateTime.now().subtract(Duration(days: 30));
+  DateTime _endDate = DateTime.now();
+  String _selectedMetric = 'Heart Rate';
+  bool _isOffline = false;
 
   @override
   void initState() {
     super.initState();
-    // Auto-refresh data when screen is loaded
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      _refreshData();
-    });
-  }
-
-  Future<void> _refreshData() async {
-    setState(() {
-      _isRefreshing = true;
-    });
-
-    // Call the HealthService to sync data
-    await Provider.of<HealthService>(context, listen: false).startMonitoring();
-
-    setState(() {
-      _isRefreshing = false;
-    });
+    // Initialize any data or settings
   }
 
   @override
   Widget build(BuildContext context) {
-    final healthService = Provider.of<HealthService>(context);
-    final authService = Provider.of<AuthService>(context, listen: false);
-
     return Scaffold(
       appBar: AppBar(
         title: Text('Dashboard'),
       ),
-      body: RefreshIndicator(
-        onRefresh: _refreshData,
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // User profile section
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Row(
-                  children: [
-                    CircleAvatar(
-                      radius: 40,
-                      backgroundImage: NetworkImage('https://example.com/user_profile_picture.jpg'),
-                    ),
-                    SizedBox(width: 16),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Username',
-                          style: Theme.of(context).textTheme.headline6,
-                        ),
-                        SizedBox(height: 4),
-                        Text(
-                          'Last Sync: ${DateFormat('yyyy-MM-dd HH:mm').format(DateTime.now())}',
-                          style: Theme.of(context).textTheme.bodyText2,
-                        ),
-                      ],
-                    ),
-                  ],
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Date Range
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                ElevatedButton.icon(
+                  onPressed: _selectDateRange,
+                  icon: Icon(Icons.date_range),
+                  label: Text('Select Date Range'),
                 ),
-              ),
+                Text('From: ${DateFormat('yyyy-MM-dd').format(_startDate)} To: ${DateFormat('yyyy-MM-dd').format(_endDate)}'),
+              ],
+            ),
+            SizedBox(height: 16),
 
-              // Real-time health metrics cards
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Card(
-                  elevation: 4,
-                  child: ListTile(
-                    leading: Icon(Icons.favorite),
-                    title: Text('Heart Rate'),
-                    subtitle: Text('${healthService.currentHeartRate} BPM'),
-                    trailing: Text('Normal'),
+            // Metric Selector
+            DropdownButton<String>(
+              value: _selectedMetric,
+              onChanged: (String? newValue) {
+                setState(() {
+                  _selectedMetric = newValue!;
+                });
+              },
+              items: <String>['Heart Rate', 'Step Count']
+                  .map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+            ),
+            SizedBox(height: 16),
+
+            // Chart Display (Heart Rate or Step Count)
+            if (_selectedMetric == 'Heart Rate') ...[
+              Text('Heart Rate Trends'),
+              Container(
+                height: 200,
+                child: LineChart(
+                  LineChartData(
+                    gridData: FlGridData(show: false),
+                    titlesData: FlTitlesData(show: true),
+                    borderData: FlBorderData(show: true),
+                    lineBarsData: [
+                      LineChartBarData(
+                        spots: _generateHeartRateData(),
+                        isCurved: true,
+                        color: Colors.blue,
+                        belowBarData: BarAreaData(show: false),
+                      ),
+                    ],
                   ),
                 ),
               ),
-
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Card(
-                  elevation: 4,
-                  child: ListTile(
-                    leading: Icon(Icons.directions_walk),
-                    title: Text('Step Count'),
-                    subtitle: Text('${healthService.stepCount} steps'),
-                    trailing: CircularProgressIndicator(
-                      value: healthService.stepCount / 10000, // 10,000 is the goal
-                    ),
-                  ),
-                ),
-              ),
-
-              // Bluetooth connection status indicator
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Row(
-                  children: [
-                    Icon(
-                      healthService.isConnected ? Icons.bluetooth_connected : Icons.bluetooth_disabled,
-                      color: healthService.isConnected ? Colors.green : Colors.red,
-                    ),
-                    SizedBox(width: 8),
-                    Text(
-                      healthService.isConnected ? 'Connected to Bluetooth' : 'Bluetooth Disconnected',
-                      style: TextStyle(color: healthService.isConnected ? Colors.green : Colors.red),
-                    ),
-                  ],
-                ),
-              ),
-
-              // Quick actions toolbar
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    ElevatedButton.icon(
-                      onPressed: _syncData,
-                      icon: Icon(Icons.sync),
-                      label: Text('Sync Data'),
-                    ),
-                    ElevatedButton.icon(
-                      onPressed: _toggleMonitoring,
-                      icon: Icon(healthService.isConnected ? Icons.pause : Icons.play_arrow),
-                      label: Text(healthService.isConnected ? 'Stop Monitoring' : 'Start Monitoring'),
-                    ),
-                    ElevatedButton.icon(
-                      onPressed: _emergencyContact,
-                      icon: Icon(Icons.phone),
-                      label: Text('Emergency'),
-                    ),
-                  ],
-                ),
-              ),
-
-              // Heart rate visualization
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Card(
-                  elevation: 4,
-                  child: ListTile(
-                    leading: Icon(Icons.favorite),
-                    title: Text('Heart Rate Visualization'),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Current BPM: ${healthService.currentHeartRate}'),
-                        // Add your graph here (example)
-                        Container(height: 150, color: Colors.grey[200]),
-                        Text('Heart Rate Zones: Normal'),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-
-              // Step counter
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Card(
-                  elevation: 4,
-                  child: ListTile(
-                    leading: Icon(Icons.directions_walk),
-                    title: Text('Step Counter'),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Today\'s steps: ${healthService.stepCount}'),
-                        LinearProgressIndicator(
-                          value: healthService.stepCount / 10000, // 10,000 is the goal
-                        ),
-                        Text('Previous day: 5,000 steps'),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-
-              // Daily statistics summary
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Card(
-                  elevation: 4,
-                  child: ListTile(
-                    leading: Icon(Icons.assessment),
-                    title: Text('Daily Statistics'),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Average Heart Rate: 72 BPM'),
-                        Text('Total Active Minutes: 120 mins'),
-                        Text('Calories Burned: 500 kcal'),
-                      ],
-                    ),
+            ] else if (_selectedMetric == 'Step Count') ...[
+              Text('Step Count Trends'),
+              Container(
+                height: 200,
+                child: BarChart(
+                  BarChartData(
+                    gridData: FlGridData(show: false),
+                    titlesData: FlTitlesData(show: true),
+                    borderData: FlBorderData(show: true),
+                    barGroups: _generateStepCountData(),
                   ),
                 ),
               ),
             ],
-          ),
+          ],
         ),
       ),
     );
   }
 
-  Future<void> _syncData() async {
-    // Implement sync data functionality here
-    // Sync health data with backend or cloud service
-    setState(() {
-      // Show progress indicator while syncing
-    });
-  }
+  // Date Range Selection
+  void _selectDateRange() async {
+    final DateTimeRange? selectedRange = await showDateRangePicker(
+      context: context,
+      firstDate: DateTime(2020),
+      lastDate: DateTime.now(),
+      initialDateRange: DateTimeRange(start: _startDate, end: _endDate),
+    );
 
-  Future<void> _toggleMonitoring() async {
-    final healthService = Provider.of<HealthService>(context, listen: false);
-    if (healthService.isConnected) {
-      // Stop monitoring
-      healthService.stopMonitoring();
-    } else {
-      // Start monitoring
-      healthService.startMonitoring();
+    if (selectedRange != null) {
+      setState(() {
+        _startDate = selectedRange.start;
+        _endDate = selectedRange.end;
+      });
     }
   }
 
-  void _emergencyContact() {
-    // Implement emergency contact functionality
-    // For example, open the phone dialer
+  // Heart Rate Data for Line Chart
+  List<FlSpot> _generateHeartRateData() {
+    return [
+      FlSpot(0, 70),
+      FlSpot(1, 72),
+      FlSpot(2, 68),
+      FlSpot(3, 75),
+      FlSpot(4, 80),
+      FlSpot(5, 78),
+      FlSpot(6, 76),
+    ];
+  }
+
+  // Step Count Data for Bar Chart
+  List<BarChartGroupData> _generateStepCountData() {
+    return [
+      BarChartGroupData(x: 0, barRods: [BarChartRodData(toY: 1200, color: Colors.green)]),
+      BarChartGroupData(x: 1, barRods: [BarChartRodData(toY: 1300, color: Colors.green)]),
+      BarChartGroupData(x: 2, barRods: [BarChartRodData(toY: 1100, color: Colors.green)]),
+      BarChartGroupData(x: 3, barRods: [BarChartRodData(toY: 1500, color: Colors.green)]),
+      BarChartGroupData(x: 4, barRods: [BarChartRodData(toY: 1400, color: Colors.green)]),
+      BarChartGroupData(x: 5, barRods: [BarChartRodData(toY: 1600, color: Colors.green)]),
+      BarChartGroupData(x: 6, barRods: [BarChartRodData(toY: 1800, color: Colors.green)]),
+    ];
   }
 }

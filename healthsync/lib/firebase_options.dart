@@ -77,7 +77,7 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyAcDPe30vQn24y4SwYgmW_VjXs-clpTVCI',
+    apiKey: '',
     appId: '1:778984983203:web:a7a054f499c55e09fb4d16',
     messagingSenderId: '778984983203',
     projectId: 'healthsync-14b50',

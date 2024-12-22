@@ -1,10 +1,6 @@
-// lib/screens/settings_screen.dart
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:flutter/cupertino.dart';
-import 'health_service.dart';
+import 'package:image_picker/image_picker.dart'; // To pick images from gallery or camera
+import 'dart:io';
 
 class SettingsScreen extends StatefulWidget {
   @override
@@ -12,211 +8,82 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  final _imagePicker = ImagePicker();
-  String? _profileImageUrl;
-  String _userName = 'John Doe';
-  String _userEmail = 'john.doe@example.com';
-  bool _isDarkMode = false;
-  bool _notificationsEnabled = true;
-  String _unitsPreference = 'Metric';
-  int _stepGoal = 10000;
-  int _heartRateZone = 75;
-  int _syncFrequency = 15; // In minutes
-  bool _isBluetoothConnected = false;
+  final ImagePicker _picker = ImagePicker();
+  File? _image;
 
-  @override
-  void initState() {
-    super.initState();
-    // Load settings (you can add your actual logic here)
-  }
-
-  // Method to pick profile image
-  Future<void> _pickProfileImage() async {
-    final pickedFile = await _imagePicker.pickImage(source: ImageSource.gallery);
+  // Function to pick an image from the gallery or camera
+  Future<void> _pickImage() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       setState(() {
-        _profileImageUrl = pickedFile.path;
+        _image = File(pickedFile.path);
       });
     }
   }
 
-  // Method to handle theme toggle
-  void _toggleTheme(bool value) {
-    setState(() {
-      _isDarkMode = value;
-    });
-  }
-
-  // Method to handle Bluetooth connection
-  void _connectBluetooth() {
-    // Implement Bluetooth connection logic
-    setState(() {
-      _isBluetoothConnected = !_isBluetoothConnected;
-    });
+  // Function to take a picture from the camera
+  Future<void> _takePicture() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.camera);
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final healthService = Provider.of<HealthService>(context);
-
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Settings'),
-      ),
+      appBar: AppBar(title: Text('Settings')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: ListView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // User Profile Section
-            GestureDetector(
-              onTap: _pickProfileImage,
+            // Profile Picture Section
+            Center(
               child: CircleAvatar(
                 radius: 50,
-                backgroundImage: _profileImageUrl != null
-                    ? FileImage(File(_profileImageUrl!))
-                    : AssetImage('assets/images/default_avatar.png') as ImageProvider,
+                backgroundImage: _image != null ? FileImage(_image!) : null,
+                child: _image == null
+                    ? Icon(Icons.person, size: 50)
+                    : null,
               ),
             ),
-            SizedBox(height: 16),
-            Text(_userName, style: TextStyle(fontSize: 22)),
-            Text(_userEmail, style: TextStyle(fontSize: 16, color: Colors.grey)),
-            ElevatedButton(
-              onPressed: () {
-                // Implement edit profile logic
-              },
-              child: Text('Edit Profile'),
-            ),
-            Divider(),
-
-            // Device Management Section
-            ListTile(
-              title: Text('Bluetooth Device'),
-              subtitle: Text(_isBluetoothConnected ? 'Connected' : 'Not Connected'),
-              trailing: ElevatedButton(
-                onPressed: _connectBluetooth,
-                child: Text(_isBluetoothConnected ? 'Disconnect' : 'Connect'),
+            SizedBox(height: 20),
+            Center(
+              child: ElevatedButton(
+                onPressed: _pickImage,
+                child: Text('Pick Image from Gallery'),
               ),
             ),
-            ElevatedButton(
-              onPressed: () {
-                // Implement pair new device logic
-              },
-              child: Text('Pair New Device'),
+            SizedBox(height: 10),
+            Center(
+              child: ElevatedButton(
+                onPressed: _takePicture,
+                child: Text('Take Picture with Camera'),
+              ),
             ),
-            Divider(),
+            SizedBox(height: 30),
 
-            // App Preferences Section
+            // Other Settings Section
+            Text('Other Settings'),
             SwitchListTile(
-              title: Text('Dark/Light Theme'),
-              value: _isDarkMode,
-              onChanged: _toggleTheme,
+              title: Text('Enable Notifications'),
+              value: true, // You can bind this to an actual setting
+              onChanged: (bool value) {},
             ),
-            ListTile(
-              title: Text('Notification Settings'),
-              trailing: Switch(
-                value: _notificationsEnabled,
-                onChanged: (value) {
-                  setState(() {
-                    _notificationsEnabled = value;
-                  });
-                },
-              ),
-            ),
-            ListTile(
-              title: Text('Data Sync Frequency'),
-              subtitle: Text('Every $_syncFrequency minutes'),
-              trailing: IconButton(
-                icon: Icon(Icons.edit),
-                onPressed: () {
-                  // Implement sync frequency change logic
-                },
-              ),
-            ),
-            ListTile(
-              title: Text('Units Preference'),
-              subtitle: Text(_unitsPreference),
-              trailing: IconButton(
-                icon: Icon(Icons.edit),
-                onPressed: () {
-                  // Implement units preference change logic
-                },
-              ),
-            ),
-            Divider(),
-
-            // Health Goals Section
-            ListTile(
-              title: Text('Daily Step Goal'),
-              subtitle: Text('$_stepGoal steps'),
-              trailing: IconButton(
-                icon: Icon(Icons.edit),
-                onPressed: () {
-                  // Implement step goal change logic
-                },
-              ),
-            ),
-            ListTile(
-              title: Text('Heart Rate Zone'),
-              subtitle: Text('$_heartRateZone%'),
-              trailing: IconButton(
-                icon: Icon(Icons.edit),
-                onPressed: () {
-                  // Implement heart rate zone change logic
-                },
-              ),
-            ),
-            ListTile(
-              title: Text('Activity Reminder'),
-              trailing: Switch(
-                value: _notificationsEnabled,
-                onChanged: (value) {
-                  setState(() {
-                    _notificationsEnabled = value;
-                  });
-                },
-              ),
-            ),
-            Divider(),
-
-            // Data Management Section
-            ListTile(
-              title: Text('Clear Local Data'),
-              onTap: () {
-                // Implement local data clearing logic
-              },
-            ),
-            ListTile(
-              title: Text('Backup Settings'),
-              onTap: () {
-                // Implement backup settings logic
-              },
-            ),
-            ListTile(
-              title: Text('Privacy Settings'),
-              onTap: () {
-                // Implement privacy settings logic
-              },
-            ),
-            Divider(),
-
-            // Account Management Section
             ListTile(
               title: Text('Change Password'),
               onTap: () {
-                // Implement change password logic
+                // Navigate to a Change Password screen (if any)
               },
             ),
             ListTile(
-              title: Text('Delete Account'),
+              title: Text('Logout'),
               onTap: () {
-                // Implement delete account logic
+                // Implement Logout functionality (e.g., Firebase Auth sign-out)
               },
-            ),
-            ElevatedButton(
-              onPressed: () {
-                // Implement logout logic
-              },
-              child: Text('Logout'),
             ),
           ],
         ),

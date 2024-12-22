@@ -1,47 +1,23 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter/material.dart';
 
-class AuthService {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final GoogleSignIn _googleSignIn = GoogleSignIn();
+class AuthService with ChangeNotifier {
+  bool _isAuthenticated = false;
+  String? _userId;
 
-  // Email/Password authentication
-  Future<void> signInWithEmail(String email, String password) async {
-    try {
-      await _auth.signInWithEmailAndPassword(email: email, password: password);
-    } catch (e) {
-      throw Exception('Authentication failed');
-    }
+  bool get isAuthenticated => _isAuthenticated;
+  String? get userId => _userId;
+
+  Future<void> login(String username, String password) async {
+    // Simulate an API call
+    await Future.delayed(Duration(seconds: 2));
+    _isAuthenticated = true;
+    _userId = "user123"; // Mock user ID
+    notifyListeners();
   }
 
-  // Google Sign-In
-  Future<void> signInWithGoogle() async {
-    try {
-      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-      final GoogleSignInAuthentication googleAuth = await googleUser!.authentication;
-
-      final AuthCredential credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
-
-      await _auth.signInWithCredential(credential);
-    } catch (e) {
-      throw Exception('Google Sign-In failed');
-    }
-  }
-
-  // Password reset
-  Future<void> resetPassword(String email) async {
-    try {
-      await _auth.sendPasswordResetEmail(email: email);
-    } catch (e) {
-      throw Exception('Failed to reset password');
-    }
-  }
-
-  // Store user session in secure storage
-  Future<void> storeUserCredentials() async {
-    // Store the credentials securely (e.g., using FlutterSecureStorage)
+  Future<void> logout() async {
+    _isAuthenticated = false;
+    _userId = null;
+    notifyListeners();
   }
 }

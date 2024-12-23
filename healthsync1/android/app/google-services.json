@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1015119387480",
+    "project_id": "healthsync1-aae29",
+    "storage_bucket": "healthsync1-aae29.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1015119387480:android:aa8b1c7da8c7410186232d",
+        "android_client_info": {
+          "package_name": "com.healthsync1.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCgkRb5gsfwS7556XzIl-gq-vAmqjbkepM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

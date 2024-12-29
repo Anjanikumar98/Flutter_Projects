@@ -3,6 +3,8 @@ import 'package:fl_chart/fl_chart.dart';  // Import fl_chart
 import 'package:intl/intl.dart';  // To use DateFormat
 
 class HistoryScreen extends StatefulWidget {
+  const HistoryScreen({super.key});
+
   @override
   _HistoryScreenState createState() => _HistoryScreenState();
 }

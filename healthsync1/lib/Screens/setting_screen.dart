@@ -3,6 +3,8 @@ import 'package:image_picker/image_picker.dart'; // To pick images from gallery 
 import 'dart:io';
 
 class SettingsScreen extends StatefulWidget {
+  const SettingsScreen({super.key});
+
   @override
   _SettingsScreenState createState() => _SettingsScreenState();
 }

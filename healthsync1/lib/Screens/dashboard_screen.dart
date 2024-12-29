@@ -3,6 +3,8 @@ import 'package:fl_chart/fl_chart.dart';  // Import fl_chart
 import 'package:intl/intl.dart';  // To use DateFormat
 
 class DashboardScreen extends StatefulWidget {
+  const DashboardScreen({super.key});
+
   @override
   _DashboardScreenState createState() => _DashboardScreenState();
 }

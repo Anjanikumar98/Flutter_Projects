@@ -4,6 +4,8 @@ import '../services/auth_services.dart';
 import '../services/health_service.dart';
 
 class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     final authService = Provider.of<AuthService>(context);

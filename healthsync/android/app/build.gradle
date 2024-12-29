@@ -45,9 +45,14 @@ flutter {
 }
 
 dependencies {
+<<<<<<< HEAD
     implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
     implementation("com.google.firebase:firebase-analytics-ktx")
     implementation("com.example.conflicting-library") {
         exclude(group = "com.google.gms", module = "google-services")
     }
+=======
+    // Add your Android dependencies here, if any
+    // For example: implementation("androidx.core:core-ktx:1.9.0")
+>>>>>>> 3a75b38f247e9fae238563409d48799b5cb95697
 }

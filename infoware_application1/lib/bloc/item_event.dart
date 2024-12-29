@@ -1,6 +1,5 @@
-part of 'item_bloc.dart';
+import '../ViewModel/world_sates_view_model.dart';
 
-@immutable
-abstract class ItemEvent {}
+abstract class DataEvent {}
 
-class FetchItems extends ItemEvent {}
+class FetchDataEvent extends DataEvent {}

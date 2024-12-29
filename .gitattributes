@@ -1,6 +1,1 @@
-*.apk filter=lfs diff=lfs merge=lfs -text
-<<<<<<< HEAD
-*.file-extension filter=lfs diff=lfs merge=lfs -text
-*.zip filter=lfs diff=lfs merge=lfs -text
-=======
->>>>>>> 3a75b38f247e9fae238563409d48799b5cb95697
+* text=auto 

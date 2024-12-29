@@ -1,23 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'bloc/item_bloc.dart';
-import 'repositories/item_repository.dart';
-import 'screens/home_screen.dart';
+
+import 'View/splash_screen.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
+  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter API App',
-      theme: ThemeData(primarySwatch: Colors.blue),
-      home: BlocProvider(
-        create: (context) => ItemBloc(ItemRepository()),
-        child: HomeScreen(),
+      title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        brightness: Brightness.dark,
+        primarySwatch: Colors.blue,
       ),
+      home:  SplashScreen(),
     );
   }
 }

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 
 class AudioPlayerWidget extends StatefulWidget {
+  const AudioPlayerWidget({super.key});
+
   @override
   _AudioPlayerWidgetState createState() => _AudioPlayerWidgetState();
 }
@@ -9,16 +11,20 @@ class AudioPlayerWidget extends StatefulWidget {
 class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
   final AudioPlayer audioPlayer = AudioPlayer();
   bool isPlaying = false;
+  bool isStopped = true;
+  Duration duration = Duration();
+  Duration position = Duration();
 
   void playAudio() async {
     try {
-      // Use `Source.asset` to load the audio file
-      await audioPlayer.play(AssetSource('audio/sample_audio.mp3'));
+      await audioPlayer.play(AssetSource('assets/audio/sample_audio.mp3'));
       setState(() {
         isPlaying = true;
+        isStopped = false;
       });
     } catch (e) {
       print("Error playing audio: $e");
+      // Display error to the user
     }
   }
 
@@ -33,12 +39,40 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
     await audioPlayer.stop();
     setState(() {
       isPlaying = false;
+      isStopped = true;
+      position = Duration();
+    });
+  }
+
+  void onAudioPositionChanged(Duration position) {
+    setState(() {
+      this.position = position;
+    });
+  }
+
+  void onAudioDurationChanged(Duration duration) {
+    setState(() {
+      this.duration = duration;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    audioPlayer.onPositionChanged.listen(onAudioPositionChanged);
+    audioPlayer.onPlayerStateChanged.listen((state) {
+      if (state == PlayerState.completed) {
+        setState(() {
+          isPlaying = false;
+          isStopped = true;
+          position = Duration();
+        });
+      }
     });
   }
 
   @override
   void dispose() {
-    // Dispose of the audio player to free resources
     audioPlayer.dispose();
     super.dispose();
   }
@@ -56,6 +90,17 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
           onPressed: stopAudio,
           child: Text('Stop'),
         ),
+        if (!isStopped) ...[
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            child: LinearProgressIndicator(
+              value: position.inMilliseconds / duration.inMilliseconds,
+              backgroundColor: Colors.grey[300],
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+            ),
+          ),
+          Text('${position.inMinutes}:${(position.inSeconds % 60).toString().padLeft(2, '0')} / ${duration.inMinutes}:${(duration.inSeconds % 60).toString().padLeft(2, '0')}'),
+        ],
       ],
     );
   }

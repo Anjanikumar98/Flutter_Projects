@@ -1,24 +1,21 @@
-import 'package:bloc/bloc.dart';
-import 'package:meta/meta.dart';
-import '../models/item_model.dart';
-import '../repositories/item_repository.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../ViewModel/world_sates_view_model.dart';
+import 'item_event.dart';
+import 'item_state.dart';
 
-part 'item_event.dart';
-part 'item_state.dart';
+class DataBloc extends Bloc<DataEvent, DataState> {
+  final WorldStatesViewModel worldStatesViewModel;
 
-class ItemBloc extends Bloc<ItemEvent, ItemState> {
-  final ItemRepository itemRepository;
+  DataBloc(this.worldStatesViewModel) : super(DataLoadingState());
 
-  ItemBloc(this.itemRepository) : super(ItemInitial());
-
-  Stream<ItemState> mapEventToState(ItemEvent event) async* {
-    if (event is FetchItems) {
-      yield ItemLoading();
+  Stream<DataState> mapEventToState(DataEvent event) async* {
+    if (event is FetchDataEvent) {
+      yield DataLoadingState();
       try {
-        final List<ItemModel> items = await itemRepository.fetchItems();
-        yield ItemLoaded(items);
+        final data = await worldStatesViewModel.countriesListApi();
+        yield DataLoadedState(data);
       } catch (e) {
-        yield ItemError("Failed to fetch items");
+        yield DataErrorState();
       }
     }
   }

@@ -1,20 +1,9 @@
-part of 'item_bloc.dart';
+// State
+abstract class DataState {}
 
-@immutable
-abstract class ItemState {}
-
-class ItemInitial extends ItemState {}
-
-class ItemLoading extends ItemState {}
-
-class ItemLoaded extends ItemState {
-  final List<ItemModel> items;
-
-  ItemLoaded(this.items);
+class DataLoadingState extends DataState {}
+class DataLoadedState extends DataState {
+  final List<dynamic> data;
+  DataLoadedState(this.data);
 }
-
-class ItemError extends ItemState {
-  final String message;
-
-  ItemError(this.message);
-}
+class DataErrorState extends DataState {}

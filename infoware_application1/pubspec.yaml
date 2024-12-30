@@ -35,10 +35,6 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
   http:
-  animated_text_kit:
-  pie_chart:
-  flutter_spinkit:
-  shimmer:
   just_audio: ^0.9.42
   flutter_bloc: ^8.1.6
   formz: ^0.8.0
@@ -62,7 +58,6 @@ dev_dependencies:
 flutter:
   assets:
     - assets/audio/sample_audio.mp3
-    - assets/images/virus.png
 
 
   # The following line ensures that the Material Icons font is

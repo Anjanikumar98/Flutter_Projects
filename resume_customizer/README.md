@@ -2,6 +2,9 @@
 
 A new Flutter project.
 
+In this application, it will ask your detail and make the file based on your details.
+
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.
